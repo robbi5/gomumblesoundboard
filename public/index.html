@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GoMumbleSoundboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+  body {
+    font-family: sans-serif;
+    margin: 0 auto;
+    max-width: 65em;
+  }
+  h1 {
+    text-align: center;
+  }
+  #wrap {
+    text-align: center;
+  }
+  #stop {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    min-height: 6em;
+  }
+  #stop:active {
+    background-color: #F22613;
+  }
+  .sound {
+    vertical-align: top;
+    margin: 0 1em 1em 0;
+    width: 12em;
+    min-height: 7em;
+    -webkit-appearance: none;
+    border: 1px solid #AAA;
+    background-color: #fff;
+    transition: background-color 0.5s;
+    outline: none;
+    word-wrap: break-word;
+  }
+  .sound.done {
+    background-color: #87D37C;
+  }
+  .sound.fail {
+    background-color: #F22613;
+  }
+  </style>
+</head>
+<body>
+<h1>GoMumbleSoundboard</h1>
+<button class="sound" id="stop">Stop!</button>
+<div id="buttons"></div>
+
+<script>
+function get(url) {
+  return new Promise(function(resolve, reject) {
+    var req = new XMLHttpRequest();
+    req.open('GET', url);
+    req.onload = function() {
+      if (req.status == 200) {
+        resolve(req.response);
+      } else {
+        reject(Error(req.statusText));
+      }
+    };
+    req.onerror = function() {
+      reject(Error("Network Error"));
+    };
+    req.send();
+  });
+};
+function removeClassAfter(el, cssclass, msec) {
+  setTimeout(function() {
+    el.classList.remove(cssclass);
+  }, msec);
+}
+
+var wrapEl = document.getElementById('buttons'),
+    stopBtn = document.getElementById('stop');
+
+get('/files.json').then(function(resp){
+  var files = JSON.parse(resp);
+  files.forEach(function(file){
+    var btn = document.createElement("button");
+    btn.classList.add("sound");
+    btn.classList.add("play");
+    btn.innerHTML = file;
+    btn.dataset.file = file;
+    wrapEl.appendChild(btn);
+  });
+});
+
+stopBtn.addEventListener('click', function(ev) {
+  get('/stop');
+});
+
+document.addEventListener('click', function(ev) {
+  if (!ev.target.classList.contains("play")) return;
+  var el = ev.target,
+      file = el.dataset.file;
+  get('/play/' + file).then(function() {
+    el.classList.add("done");
+    removeClassAfter(el, "done", 1000);
+  }).catch(function() {
+    el.classList.add("fail");
+    removeClassAfter(el, "fail", 1000);
+  });
+}, false);
+</script>
+</body>
+</html>
