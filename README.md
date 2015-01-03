@@ -1,6 +1,6 @@
 # GoMumbleSoundboard
 A Soundboard for the [Mumble](http://mumble.info) voice chat software written in [Go](http://golang.org).
-![gomumblesoundboard](https://cloud.githubusercontent.com/assets/172415/5604055/9fdd7d50-93a4-11e4-9a88-4d0a6fe5f33e.png)
+![gomumblesoundboard](https://cloud.githubusercontent.com/assets/172415/5604064/6524d658-93a5-11e4-8009-beb179c03b81.png)
 ## Requirements
 
 * mumble server
