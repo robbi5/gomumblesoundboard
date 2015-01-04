@@ -40,7 +40,7 @@ func main() {
 			}
 			fmt.Printf("Channel: %s\n", e.Client.Self().Channel().Name())
 
-			if e.Client.Self().Channel().Name() != *targetChannel {
+			if *targetChannel != "" && e.Client.Self().Channel().Name() != *targetChannel {
 				target := e.Client.Self().Channel().Find(*targetChannel)
 				e.Client.Self().Move(target)
 				fmt.Printf("Moved to: %s\n", target.Name())
