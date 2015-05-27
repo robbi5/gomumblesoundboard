@@ -1,16 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
-	"encoding/json"
 
+	"github.com/go-martini/martini"
 	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumble_ffmpeg"
 	"github.com/layeh/gumble/gumbleutil"
-	"github.com/go-martini/martini"
 )
 
 func main() {
@@ -51,9 +51,9 @@ func main() {
 			// martini.Static() is used, so public/index.html gets automagically served
 			m.Get("/files.json", func() string {
 				keys := make([]string, 0, len(files))
-			    for k := range files {
-			        keys = append(keys, k)
-			    }
+				for k := range files {
+					keys = append(keys, k)
+				}
 				js, _ := json.Marshal(keys)
 				return string(js)
 			})
