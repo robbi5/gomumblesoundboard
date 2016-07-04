@@ -1,6 +1,10 @@
 {
 	"ImportPath": "github.com/robbi5/gomumblesoundboard",
-	"GoVersion": "go1.3.3",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v74",
+	"Packages": [
+		"github.com/robbi5/gomumblesoundboard"
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/codegangsta/inject",
@@ -22,6 +26,14 @@
 		},
 		{
 			"ImportPath": "github.com/layeh/gumble/gumble",
+			"Rev": "fdf1c7d8480d08fdedd1bfacdf496eb60c5c8e20"
+		},
+		{
+			"ImportPath": "github.com/layeh/gumble/gumble/MumbleProto",
+			"Rev": "fdf1c7d8480d08fdedd1bfacdf496eb60c5c8e20"
+		},
+		{
+			"ImportPath": "github.com/layeh/gumble/gumble/varint",
 			"Rev": "fdf1c7d8480d08fdedd1bfacdf496eb60c5c8e20"
 		},
 		{

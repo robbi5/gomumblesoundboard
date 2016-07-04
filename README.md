@@ -3,10 +3,10 @@ A Soundboard for the [Mumble](http://mumble.info) voice chat software written in
 ![gomumblesoundboard](https://cloud.githubusercontent.com/assets/172415/5604064/6524d658-93a5-11e4-8009-beb179c03b81.png)
 ## Requirements
 
+* go >= 1.6
 * mumble server
 * folder with sounds
-* godep (`go get github.com/tools/godep`)
-* ffmpeg (`brew install ffmpeg` / `sudo apt-get install libav-tools`*)
+* ffmpeg (`brew install ffmpeg` / `sudo apt-get install libav-tools`\*)
 * opus-header (`brew install opus` / `sudo apt-get install libopus-dev`)
 
 \* On ubuntu you may need to symlink ffmpeg to avconv: `sudo ln -s /usr/bin/avconv /usr/bin/ffmpeg`
@@ -16,7 +16,6 @@ Using [godep](https://github.com/tools/godep) to handle dependency version locki
 
     $ git clone https://github.com/robbi5/gomumblesoundboard
     $ cd gomumblesoundboard
-    $ godep restore
     $ go build
 
 ## Usage
