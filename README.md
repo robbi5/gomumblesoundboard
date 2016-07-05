@@ -11,16 +11,16 @@ A Soundboard for the [Mumble](http://mumble.info) voice chat software written in
 
 \* On ubuntu you may need to symlink ffmpeg to avconv: `sudo ln -s /usr/bin/avconv /usr/bin/ffmpeg`
 
-## Install
-Using [godep](https://github.com/tools/godep) to handle dependency version locking:
+Tested on OS X 10.11 and Ubuntu 14.04 LTS.
 
-    $ git clone https://github.com/robbi5/gomumblesoundboard
-    $ cd gomumblesoundboard
-    $ go build
+## Install
+
+    $ go get github.com/robbi5/gomumblesoundboard
 
 ## Usage
 
-    ./gomumblesoundboard --server yourmumbleserver.com:64738 --insecure --channel ChannelName ~/SoundboardFiles/*.mp3
+    cd $GOPATH/src/github.com/robbi5/gomumblesoundboard
+    $GOPATH/bin/gomumblesoundboard --server yourmumbleserver.com:64738 --insecure --channel ChannelName ~/SoundboardFiles/*.mp3
 
 Then open [http://localhost:3000](http://localhost:3000) and press all the buttons!
 
@@ -33,6 +33,19 @@ Then open [http://localhost:3000](http://localhost:3000) and press all the butto
 * `--certificate` user certificate file (PEM)
 * `--key` user certificate key file (PEM)
 * `--channel ChannelName` Mumble channel to join
+
+### Supported environment variables
+
+* `HOST`
+* `PORT` (default: 3000)
+
+## Development
+
+    $ git clone https://github.com/robbi5/gomumblesoundboard.git
+    $ cd gomumblesoundboard
+    $ go build
+
+For updating/editing dependencies, use [godep](https://github.com/tools/godep).
 
 ## License
 
