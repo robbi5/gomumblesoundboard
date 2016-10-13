@@ -86,9 +86,8 @@ get('/files.json').then(function(resp){
     btn.innerHTML = file;
     btn.dataset.file = file;
     wrapEl.appendChild(btn);
+  });
 });
-});
-
 
 stopBtn.addEventListener('click', function(ev) {
   get('/stop');
