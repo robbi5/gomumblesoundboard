@@ -78,6 +78,7 @@ var wrapEl = document.getElementById('buttons'),
 
 get('/files.json').then(function(resp){
   var files = JSON.parse(resp);
+  files.sort();
   files.forEach(function(file){
     var btn = document.createElement("button");
     btn.classList.add("sound");
@@ -85,8 +86,9 @@ get('/files.json').then(function(resp){
     btn.innerHTML = file;
     btn.dataset.file = file;
     wrapEl.appendChild(btn);
-  });
 });
+});
+
 
 stopBtn.addEventListener('click', function(ev) {
   get('/stop');
