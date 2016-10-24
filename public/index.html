@@ -119,7 +119,7 @@ function handleInput(e) {
   wrapEl.childNodes.forEach(function(b) {
     var elemContent = b.innerHTML.toLowerCase();
     if(elemContent.indexOf(val.toLowerCase()) !== -1) {
-      b.style.display = "block";
+      b.style.display = "inline-block";
     } else {
       b.style.display = "none";
     };
