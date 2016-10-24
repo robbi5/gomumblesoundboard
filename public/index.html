@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link href="//cdn.muicss.com/mui-0.9.3/css/mui.min.css" rel="stylesheet" type="text/css" />
-  <script src="//cdn.muicss.com/mui-0.9.3/js/mui.min.js"></script>
   <style>
   body {
     font-family: sans-serif;
@@ -30,7 +28,7 @@
   }
   .sound {
     vertical-align: top;
-    margin: 0 1em 1em 0;
+    margin:0.5em;
     width: 12em;
     min-height: 7em;
     -webkit-appearance: none;
@@ -46,11 +44,19 @@
   .sound.fail {
     background-color: #F22613;
   }
+  #search-box {
+    width: 100%;
+    margin-bottom: 0.5em;
+
+    font-size: 1.8em;
+    line-height: 1.8em;
+    text-align: center;
+  }
   </style>
 </head>
 <body>
 <h1>GoMumbleSoundboard</h1>
-<div class="mui-textfield">
+<div>
     <input id="search-box" type="text" placeholder="search">
 </div>
 <button class="sound" id="stop">Stop!</button>
@@ -119,7 +125,7 @@ function handleInput(e) {
   wrapEl.childNodes.forEach(function(b) {
     var elemContent = b.innerHTML.toLowerCase();
     if(elemContent.indexOf(val.toLowerCase()) !== -1) {
-      b.style.display = "block";
+      b.style.display = "inline-block";
     } else {
       b.style.display = "none";
     };
