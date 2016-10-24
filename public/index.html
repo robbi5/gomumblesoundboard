@@ -3,6 +3,10 @@
 <head>
   <title>GoMumbleSoundboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link href="//cdn.muicss.com/mui-0.9.3/css/mui.min.css" rel="stylesheet" type="text/css" />
+  <script src="//cdn.muicss.com/mui-0.9.3/js/mui.min.js"></script>
   <style>
   body {
     font-family: sans-serif;
@@ -46,6 +50,9 @@
 </head>
 <body>
 <h1>GoMumbleSoundboard</h1>
+<div class="mui-textfield">
+    <input id="search-box" type="text" placeholder="search">
+</div>
 <button class="sound" id="stop">Stop!</button>
 <div id="buttons"></div>
 
@@ -105,6 +112,25 @@ document.addEventListener('click', function(ev) {
     removeClassAfter(el, "fail", 1000);
   });
 }, false);
+
+function handleInput(e) {
+  var val = e.srcElement.value;
+
+  wrapEl.childNodes.forEach(function(b) {
+    var elemContent = b.innerHTML.toLowerCase();
+    if(elemContent.indexOf(val.toLowerCase()) !== -1) {
+      b.style.display = "block";
+    } else {
+      b.style.display = "none";
+    };
+  });
+}
+
+onload = function () {
+  var e = document.getElementById('search-box');
+  e.oninput = handleInput;
+  e.onpropertychange = e.oninput; // for IE8
+};
 </script>
 </body>
 </html>
