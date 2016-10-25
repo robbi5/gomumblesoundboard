@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- incluide mui for material design -->
+  <link href="//cdn.muicss.com/mui-0.9.3/css/mui.min.css" rel="stylesheet" type="text/css" />
+  <script src="//cdn.muicss.com/mui-0.9.3/js/mui.min.js"></script>
   <style>
   body {
     font-family: sans-serif;
-    margin: 0 auto;
-    max-width: 65em;
+    background-color: #eee;
   }
   h1 {
     text-align: center;
@@ -22,21 +25,20 @@
     top: 5px;
     right: 5px;
     min-height: 6em;
+    z-index: 100;
   }
   #stop:active {
     background-color: #F22613;
   }
   .sound {
-    vertical-align: top;
-    margin:0.5em;
-    width: 12em;
-    min-height: 7em;
     -webkit-appearance: none;
-    border: 1px solid #AAA;
-    background-color: #fff;
+    width: 15em;
+    min-height: 7em;
     transition: background-color 0.5s;
-    outline: none;
     word-wrap: break-word;
+    white-space: normal;
+    text-transform: none;
+    line-height: 1.15em;
   }
   .sound.done {
     background-color: #87D37C;
@@ -44,10 +46,12 @@
   .sound.fail {
     background-color: #F22613;
   }
+  #buttons {
+    text-align: center;
+  }
   #search-box {
     width: 100%;
     margin-bottom: 0.5em;
-
     font-size: 1.8em;
     line-height: 1.8em;
     text-align: center;
@@ -55,12 +59,21 @@
   </style>
 </head>
 <body>
-<h1>GoMumbleSoundboard</h1>
-<div>
-    <input id="search-box" type="text" placeholder="search">
+
+<div class="mui-container-fluid">
+  <div class="mui-row">
+    <div class="mui-col-sm-10 mui-col-sm-offset-1">
+      <h1>GoMumbleSoundboard</h1>
+      <div class="mui-panel">
+        <div class="mui-textfield">
+            <input id="search-box" type="text" placeholder="search">
+        </div>
+        <button class="mui-btn mui-btn--raised sound" id="stop">Stop!</button>
+        <div id="buttons"></div>
+      </div>
+    </div>
+  </div>
 </div>
-<button class="sound" id="stop">Stop!</button>
-<div id="buttons"></div>
 
 <script>
 function get(url) {
@@ -94,6 +107,8 @@ get('/files.json').then(function(resp){
   files.sort();
   files.forEach(function(file){
     var btn = document.createElement("button");
+    btn.classList.add("mui-btn");
+    btn.classList.add("mui-btn--raised");
     btn.classList.add("sound");
     btn.classList.add("play");
     btn.innerHTML = file;
