@@ -1,157 +1,206 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>GoMumbleSoundboard</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <!-- incluide mui for material design -->
+  <!-- incluide MUI for material design -->
   <link href="//cdn.muicss.com/mui-0.9.3/css/mui.min.css" rel="stylesheet" type="text/css" />
   <script src="//cdn.muicss.com/mui-0.9.3/js/mui.min.js"></script>
   <style>
-  body {
-    font-family: sans-serif;
-    background-color: #eee;
-  }
-  h1 {
-    text-align: center;
-  }
-  #wrap {
-    text-align: center;
-  }
-  #stop {
-    position: fixed;
-    top: 5px;
-    right: 5px;
-    min-height: 6em;
-    z-index: 100;
-  }
-  #stop:active {
-    background-color: #F22613;
-  }
-  .sound {
-    -webkit-appearance: none;
-    width: 15em;
-    min-height: 7em;
-    transition: background-color 0.5s;
-    word-wrap: break-word;
-    white-space: normal;
-    text-transform: none;
-    line-height: 1.15em;
-  }
-  .sound.done {
-    background-color: #87D37C;
-  }
-  .sound.fail {
-    background-color: #F22613;
-  }
-  #buttons {
-    text-align: center;
-  }
-  #search-box {
-    width: 100%;
-    margin-bottom: 0.5em;
-    font-size: 1.8em;
-    line-height: 1.8em;
-    text-align: center;
-  }
+    body {
+      font-family: sans-serif;
+      background-color: #eee;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #wrap {
+      text-align: center;
+    }
+
+    #stop {
+      position: fixed;
+      top: 5px;
+      right: 5px;
+      min-height: 6em;
+      z-index: 100;
+    }
+
+    #stop:active {
+      background-color: #F22613;
+    }
+
+    .sound {
+      -webkit-appearance: none;
+      width: 15em;
+      min-height: 7em;
+      transition: background-color 0.5s;
+      word-wrap: break-word;
+      white-space: normal;
+      text-transform: none;
+      line-height: 1.15em;
+    }
+
+    .sound.done {
+      background-color: #87D37C;
+    }
+
+    .sound.fail {
+      background-color: #F22613;
+    }
+
+    #buttons {
+      text-align: center;
+    }
+
+    #search-box {
+      width: 100%;
+      margin-bottom: 0.5em;
+      font-size: 1.8em;
+      line-height: 1.8em;
+      text-align: center;
+    }
   </style>
 </head>
+
 <body>
 
-<div class="mui-container-fluid">
-  <div class="mui-row">
-    <div class="mui-col-sm-10 mui-col-sm-offset-1">
-      <h1>GoMumbleSoundboard</h1>
-      <div class="mui-panel">
-        <div class="mui-textfield">
-            <input id="search-box" type="text" placeholder="search">
+  <div class="mui-container-fluid">
+    <div class="mui-row">
+      <div class="mui-col-sm-10 mui-col-sm-offset-1">
+        <h1>GoMumbleSoundboard</h1>
+        <div class="mui-panel">
+          <div class="mui-textfield">
+            <input id="search-box" type="text" placeholder="search (separate terms with space)">
+          </div>
+          <button class="mui-btn mui-btn--raised sound" id="stop">Stop!</button>
+          <div id="buttons"></div>
         </div>
-        <button class="mui-btn mui-btn--raised sound" id="stop">Stop!</button>
-        <div id="buttons"></div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-function get(url) {
-  return new Promise(function(resolve, reject) {
-    var req = new XMLHttpRequest();
-    req.open('GET', url);
-    req.onload = function() {
-      if (req.status == 200) {
-        resolve(req.response);
-      } else {
-        reject(Error(req.statusText));
-      }
+  <script>
+    /**
+     * fetches the sound files from the go backend
+     */
+    function get(url) {
+      return new Promise(function(resolve, reject) {
+        var req = new XMLHttpRequest();
+        req.open('GET', url);
+        req.onload = function() {
+          if (req.status == 200) {
+            resolve(req.response);
+          } else {
+            reject(Error(req.statusText));
+          }
+        };
+        req.onerror = function() {
+          reject(Error("Network Error"));
+        };
+        req.send();
+      });
     };
-    req.onerror = function() {
-      reject(Error("Network Error"));
+
+    /**
+     * removes a css class after a specified period
+     * (used to indicate button press/playback of a sound file)
+     */
+    function removeClassAfter(el, cssclass, msec) {
+      setTimeout(function() {
+        el.classList.remove(cssclass);
+      }, msec);
+    }
+
+    var wrapEl = document.getElementById('buttons'),
+      stopBtn = document.getElementById('stop');
+
+    // fetch the sound files now
+    get('/files.json').then(function(resp) {
+      var files = JSON.parse(resp);
+      files.sort();
+
+      // create a button for each sound file
+      files.forEach(function(file) {
+        var btn = document.createElement("button");
+        btn.classList.add("mui-btn");
+        btn.classList.add("mui-btn--raised");
+        btn.classList.add("sound");
+        btn.classList.add("play");
+        btn.innerHTML = file;
+        btn.dataset.file = file;
+        wrapEl.appendChild(btn);
+      });
+    });
+
+    // wire the stop button
+    stopBtn.addEventListener('click', function(ev) {
+      // stop the sound playback
+      get('/stop');
+    });
+
+    // add click event handler to start/stop sound playback
+    document.addEventListener('click', function(ev) {
+      // check if this is a sound playback button
+      if (!ev.target.classList.contains("play")) return;
+
+      var el = ev.target,
+        file = el.dataset.file;
+
+      // start playback of the chosen sound file
+      get('/play/' + file).then(function() {
+        el.classList.add("done");
+        removeClassAfter(el, "done", 1000);
+      }).catch(function() {
+        el.classList.add("fail");
+        removeClassAfter(el, "fail", 1000);
+      });
+    }, false);
+
+    // input handled function for the search field
+    function handleSearchInput(e) {
+
+      // get the individual search terms
+      var searchTerms = e.srcElement.value.split(" ");
+
+      // loop through all the search terms and hide sound file buttons that
+      // don't match
+      searchTerms.forEach(function(term, idx, array) {
+
+        // check each sound file button
+        wrapEl.childNodes.forEach(function(b) {
+          var elemContent = b.innerHTML.toLowerCase();
+
+          // if the current sound file doesn't contain the current search term
+          if (elemContent.indexOf(term.toLowerCase()) === -1) {
+            // hide the button
+            b.style.display = "none";
+            // move on
+            return;
+          };
+
+          // check if this is the last search term
+          if (idx === array.length - 1) {
+            b.style.display = "inline-block";
+          }
+        });
+      });
+    }
+
+    // register the input handler function when the doc as been loaded
+    onload = function() {
+      var e = document.getElementById('search-box');
+      e.oninput = handleSearchInput;
+      e.onpropertychange = e.oninput; // for IE8
     };
-    req.send();
-  });
-};
-function removeClassAfter(el, cssclass, msec) {
-  setTimeout(function() {
-    el.classList.remove(cssclass);
-  }, msec);
-}
-
-var wrapEl = document.getElementById('buttons'),
-    stopBtn = document.getElementById('stop');
-
-get('/files.json').then(function(resp){
-  var files = JSON.parse(resp);
-  files.sort();
-  files.forEach(function(file){
-    var btn = document.createElement("button");
-    btn.classList.add("mui-btn");
-    btn.classList.add("mui-btn--raised");
-    btn.classList.add("sound");
-    btn.classList.add("play");
-    btn.innerHTML = file;
-    btn.dataset.file = file;
-    wrapEl.appendChild(btn);
-  });
-});
-
-stopBtn.addEventListener('click', function(ev) {
-  get('/stop');
-});
-
-document.addEventListener('click', function(ev) {
-  if (!ev.target.classList.contains("play")) return;
-  var el = ev.target,
-      file = el.dataset.file;
-  get('/play/' + file).then(function() {
-    el.classList.add("done");
-    removeClassAfter(el, "done", 1000);
-  }).catch(function() {
-    el.classList.add("fail");
-    removeClassAfter(el, "fail", 1000);
-  });
-}, false);
-
-function handleSearchInput(e) {
-  var val = e.srcElement.value;
-
-  wrapEl.childNodes.forEach(function(b) {
-    var elemContent = b.innerHTML.toLowerCase();
-    if(elemContent.indexOf(val.toLowerCase()) !== -1) {
-      b.style.display = "inline-block";
-    } else {
-      b.style.display = "none";
-    };
-  });
-}
-
-onload = function () {
-  var e = document.getElementById('search-box');
-  e.oninput = handleSearchInput;
-  e.onpropertychange = e.oninput; // for IE8
-};
-</script>
+  </script>
 </body>
+
 </html>
