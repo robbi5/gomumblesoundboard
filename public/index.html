@@ -134,7 +134,7 @@ document.addEventListener('click', function(ev) {
   });
 }, false);
 
-function handleInput(e) {
+function handleSearchInput(e) {
   var val = e.srcElement.value;
 
   wrapEl.childNodes.forEach(function(b) {
@@ -149,7 +149,7 @@ function handleInput(e) {
 
 onload = function () {
   var e = document.getElementById('search-box');
-  e.oninput = handleInput;
+  e.oninput = handleSearchInput;
   e.onpropertychange = e.oninput; // for IE8
 };
 </script>
