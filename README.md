@@ -32,7 +32,8 @@ Then open [http://localhost:3000](http://localhost:3000) and press all the butto
 * `--insecure` skip server certificate verification
 * `--certificate` user certificate file (PEM)
 * `--key` user certificate key file (PEM)
-* `--channel ChannelName` Mumble channel to join
+* `--channel ChannelName` Mumble channel to join.  
+  If the channel is a sub channel, you need to enter the full path like `Parent/ChannelName`
 
 ### Supported environment variables
 

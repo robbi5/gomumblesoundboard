@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-  "sort"
+	"sort"
+	"strings"
 
 	"github.com/go-martini/martini"
 	"github.com/layeh/gumble/gumble"
@@ -39,10 +40,15 @@ func main() {
 			if e.WelcomeMessage != "" {
 				fmt.Printf("Welcome message: %s\n", e.WelcomeMessage)
 			}
-			fmt.Printf("Channel: %s\n", e.Client.Self().Channel().Name())
+			fmt.Printf("Current Channel: %s\n", e.Client.Self().Channel().Name())
 
 			if *targetChannel != "" && e.Client.Self().Channel().Name() != *targetChannel {
-				target := e.Client.Self().Channel().Find(*targetChannel)
+				channelPath := strings.Split(*targetChannel, "/")
+				target := e.Client.Self().Channel().Find(channelPath...)
+				if target == nil {
+					fmt.Printf("Cannot find channel named %s\n", *targetChannel)
+					os.Exit(1)
+				}
 				e.Client.Self().Move(target)
 				fmt.Printf("Moved to: %s\n", target.Name())
 			}
