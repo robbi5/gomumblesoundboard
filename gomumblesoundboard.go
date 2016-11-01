@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+  "sort"
 
 	"github.com/go-martini/martini"
 	"github.com/layeh/gumble/gumble"
@@ -54,7 +55,11 @@ func main() {
 				for k := range files {
 					keys = append(keys, k)
 				}
-				js, _ := json.Marshal(keys)
+				// Sort keys into alphabetical order. Sick of things moving around
+				ss := sort.StringSlice(keys)
+				ss.Sort()
+
+				js, _ := json.Marshal(ss)
 				return string(js)
 			})
 			m.Get("/play/:file", func(params martini.Params) (int, string) {
