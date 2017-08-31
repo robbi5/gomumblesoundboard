@@ -86,11 +86,11 @@ func main() {
 			m.Get("/volume/:volume", func(params martini.Params) (int, string) {
 				str_vol := params["volume"]
 				if vol, err := strconv.Atoi(str_vol); err == nil {
-				    if vol > 0 && vol < 100 {
+				    if vol > 0 && vol <= 100 {
 					stream.SetVolume(float32(vol)/100)
 					return 200, fmt.Sprintf("Volume set to %d\n", vol)
 				    } else {
-					return 400, "Number too small or large"
+					return 400, "Number too small or too large"
 				    }
 				} else {
 				    return 400, "NaN"
