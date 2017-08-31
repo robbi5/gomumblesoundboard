@@ -23,6 +23,22 @@
     #wrap {
       text-align: center;
     }
+    
+    #volume {
+      position: fixed;
+      top: 5px;
+      left: 5px;
+      min-height: 6em;
+      z-index: 100;
+      cursor: auto;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+    
+    #slide {
+      cursor: pointer;
+    }
 
     #stop {
       position: fixed;
@@ -74,6 +90,10 @@
       <div class="mui-col-sm-10 mui-col-sm-offset-1">
         <h1>GoMumbleSoundboard</h1>
         <div class="mui-panel">
+          <div id="volume" class="mui-btn mui-btn--raised sound">
+            Volume
+            <input id="slide" type="range" min="5" max="100" step="5" value="100">
+          </div>
           <div class="mui-textfield">
             <input id="search-box" type="text" placeholder="search (separate terms with space)">
           </div>
@@ -117,6 +137,7 @@
     }
 
     var wrapEl = document.getElementById('buttons'),
+      volSlider = document.getElementById('slide'),
       stopBtn = document.getElementById('stop');
 
     // fetch the sound files now
@@ -137,6 +158,13 @@
       });
     });
 
+    // wire volume slider
+    volSlider.addEventListener('change', function(ev) {
+      // change volume
+      var newVol = volSlider.value;
+      get('/volume/' + newVol);
+    });
+    
     // wire the stop button
     stopBtn.addEventListener('click', function(ev) {
       // stop the sound playback
