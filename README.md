@@ -42,15 +42,12 @@ Then open [http://localhost:3000](http://localhost:3000) and press all the butto
 
 ## Development
 ```
-git clone https://github.com/robbi5/gomumblesoundboard.git
+git clone https://github.com/feuerrot/gomumblesoundboard.git
 cd gomumblesoundboard
 go build .
 ```
 
-For updating/editing dependencies, use [godep](https://github.com/tools/godep).
-
 ## License
-
 MIT
 
 ## Thanks to
