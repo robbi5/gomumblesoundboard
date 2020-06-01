@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 	"strconv"
+	"strings"
 
 	"github.com/go-martini/martini"
 	"github.com/layeh/gumble/gumble"
@@ -77,24 +77,26 @@ func main() {
 					return 404, "not found"
 				}
 				stream.Stop()
-				if err := stream.Play(file); err != nil {
+				err := stream.Play(file)
+				if err != nil {
 					return 400, fmt.Sprintf("%s\n", err)
-				} else {
-					return 200, fmt.Sprintf("Playing %s\n", file)
 				}
+
+				return 200, fmt.Sprintf("Playing %s\n", file)
 			})
 			m.Get("/volume/:volume", func(params martini.Params) (int, string) {
-				str_vol := params["volume"]
-				if vol, err := strconv.Atoi(str_vol); err == nil {
-				    if vol > 0 && vol <= 100 {
-					stream.SetVolume(float32(vol)/100)
-					return 200, fmt.Sprintf("Volume set to %d\n", vol)
-				    } else {
-					return 400, "Number too small or too large"
-				    }
-				} else {
-				    return 400, "NaN"
+				strVol := params["volume"]
+				vol, err := strconv.Atoi(strVol)
+				if err != nil {
+					return 400, "NaN"
 				}
+
+				if vol < 0 && vol > 100 {
+					return 400, "Number too small or too large"
+				}
+
+				stream.SetVolume(float32(vol) / 100)
+				return 200, fmt.Sprintf("Volume set to %d\n", vol)
 			})
 			m.Get("/stop", func() string {
 				stream.Stop()
