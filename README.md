@@ -1,31 +1,32 @@
 # GoMumbleSoundboard
+This is a fork of [gomumblesoundboard](https://github.com/robbi5/gomumblesoundboard), which tries to integrate some minor fixes.
+
 A Soundboard for the [Mumble](http://mumble.info) voice chat software written in [Go](http://golang.org).
 ![gomumblesoundboard](https://cloud.githubusercontent.com/assets/172415/19899199/7921df8e-a05f-11e6-8545-13731eaacf10.png)
-## Requirements
 
-* go >= 1.6
+
+## Requirements
+* go >= 1.14 (dunno, but probably a current one)
 * mumble server
 * folder with sounds
 * ffmpeg (`brew install ffmpeg` / `sudo apt-get install libav-tools`\*)
 * opus-header (`brew install opus` / `sudo apt-get install libopus-dev`)
 
-\* On ubuntu you may need to symlink ffmpeg to avconv: `sudo ln -s /usr/bin/avconv /usr/bin/ffmpeg`
-
-Tested on OS X 10.11 and Ubuntu 14.04 LTS.
+Tested on debian bullseye
 
 ## Install
-
-    $ go get github.com/robbi5/gomumblesoundboard
+```
+go get github.com/feuerrot/gomumblesoundboard
+```
 
 ## Usage
-
-    cd $GOPATH/src/github.com/robbi5/gomumblesoundboard
-    $GOPATH/bin/gomumblesoundboard --server yourmumbleserver.com:64738 --insecure --channel ChannelName ~/SoundboardFiles/*.mp3
+```
+$GOPATH/bin/gomumblesoundboard --server yourmumbleserver.com:64738 ~/soundboard/*
+```
 
 Then open [http://localhost:3000](http://localhost:3000) and press all the buttons!
 
 ### Supported command line arguments
-
 * `--server localhost:64738` Mumble server address
 * `--username gumble-bot` client username
 * `--password hunter2` client password
@@ -36,15 +37,15 @@ Then open [http://localhost:3000](http://localhost:3000) and press all the butto
   If the channel is a sub channel, you need to enter the full path like `Parent/ChannelName`
 
 ### Supported environment variables
-
 * `HOST`
 * `PORT` (default: 3000)
 
 ## Development
-
-    $ git clone https://github.com/robbi5/gomumblesoundboard.git
-    $ cd gomumblesoundboard
-    $ go build
+```
+git clone https://github.com/robbi5/gomumblesoundboard.git
+cd gomumblesoundboard
+go build .
+```
 
 For updating/editing dependencies, use [godep](https://github.com/tools/godep).
 
@@ -52,5 +53,7 @@ For updating/editing dependencies, use [godep](https://github.com/tools/godep).
 
 MIT
 
-## Thanks
-Thanks to @bontibon / @layeh for [gumble](https://github.com/layeh/gumble) and @codegangsta for [martini](https://github.com/go-martini/martini).
+## Thanks to
+* @bontibon / @layeh for [gumble](https://github.com/layeh/gumble)
+* @codegangsta for [martini](https://github.com/go-martini/martini)
+* @robbi5 for the [original version](https://github.com/robbi5/gomumblesoundboard) of this software
