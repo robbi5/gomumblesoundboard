@@ -105,7 +105,7 @@ func main() {
 						c.AbortWithError(400, fmt.Errorf("already playing a sound, gtfo"))
 						return
 					}
-					stream.Source = gumbleffmpeg.SourceFile(file)
+					stream = gumbleffmpeg.New(e.Client, gumbleffmpeg.SourceFile(file))
 					err := stream.Play()
 					if err != nil {
 						c.AbortWithError(400, err)
