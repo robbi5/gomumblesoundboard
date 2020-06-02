@@ -29,7 +29,7 @@ func main() {
 				var stream *gumbleffmpeg.Stream
 
 				for _, dir := range flag.Args() {
-					fmt.Printf("Dir: %s", dir)
+					fmt.Printf("Dir: %s\n", dir)
 					files, err := ioutil.ReadDir(dir)
 					if err != nil {
 						continue
@@ -37,7 +37,7 @@ func main() {
 
 					for _, file := range files {
 						if file.IsDir() == false {
-							fmt.Printf("File: %s\t%s", file.Name(), filepath.Join(dir, file.Name()))
+							fmt.Printf("File: %s\t%s\n", file.Name(), filepath.Join(dir, file.Name()))
 							soundfiles[file.Name()] = filepath.Join(dir, file.Name())
 						}
 					}
