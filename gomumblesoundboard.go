@@ -15,6 +15,7 @@ import (
 	"layeh.com/gumble/gumble"
 	"layeh.com/gumble/gumbleffmpeg"
 	"layeh.com/gumble/gumbleutil"
+	_ "layeh.com/gumble/opus"
 )
 
 func main() {
