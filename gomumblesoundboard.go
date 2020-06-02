@@ -99,14 +99,17 @@ func main() {
 					file, ok := soundfiles[c.Param("file")]
 					if !ok {
 						c.AbortWithError(404, fmt.Errorf("%s: file not found", c.Param("file")))
+						return
 					}
 					if stream.State() == gumbleffmpeg.StatePlaying {
 						c.AbortWithError(400, fmt.Errorf("already playing a sound, gtfo"))
+						return
 					}
 					stream.Source = gumbleffmpeg.SourceFile(file)
 					err := stream.Play()
 					if err != nil {
 						c.AbortWithError(400, err)
+						return
 					}
 					c.String(200, fmt.Sprintf("Playing %s\n", file))
 				})
@@ -115,10 +118,12 @@ func main() {
 					vol, err := strconv.Atoi(strVol)
 					if err != nil {
 						c.AbortWithError(400, fmt.Errorf("couldn't convert %s to integer: %v", strVol, err))
+						return
 					}
 
 					if vol < 0 && vol > 100 {
 						c.AbortWithError(400, fmt.Errorf("number too small or too large: %s", strVol))
+						return
 					}
 
 					stream.Volume = float32(vol) / 100
