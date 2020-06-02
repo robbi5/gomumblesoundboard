@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -18,7 +19,7 @@ import (
 
 func main() {
 	targetChannel := flag.String("channel", "Root", "channel the bot will join")
-	files := make(map[string]string)
+	soundfiles := make(map[string]string)
 	var volume float32 = 0.5
 
 	gumbleutil.Main(
@@ -27,12 +28,20 @@ func main() {
 			Connect: func(e *gumble.ConnectEvent) {
 				var stream *gumbleffmpeg.Stream
 
-				for _, file := range flag.Args() {
-					key := filepath.Base(file)
-					files[key] = file
+				for _, dir := range flag.Args() {
+					files, err := ioutil.ReadDir(dir)
+					if err != nil {
+						continue
+					}
+
+					for _, file := range files {
+						if file.IsDir() == false {
+							soundfiles[file.Name()] = filepath.Join(dir, file.Name())
+						}
+					}
 				}
 
-				fmt.Printf("GoMumbleSoundboard loaded (%d files)\n", len(files))
+				fmt.Printf("GoMumbleSoundboard loaded (%d files)\n", len(soundfiles))
 				fmt.Printf("Connected to %s\n", e.Client.Conn.RemoteAddr())
 				fmt.Printf("Current Channel: %s\n", e.Client.Self.Channel.Name)
 
@@ -51,8 +60,8 @@ func main() {
 				m := martini.Classic()
 				// martini.Static() is used, so public/index.html gets automagically served
 				m.Get("/files.json", func() string {
-					keys := make([]string, 0, len(files))
-					for k := range files {
+					keys := make([]string, 0, len(soundfiles))
+					for k := range soundfiles {
 						keys = append(keys, k)
 					}
 					// Sort keys into alphabetical order. Sick of things moving around
@@ -63,7 +72,7 @@ func main() {
 					return string(js)
 				})
 				m.Get("/play/:file", func(params martini.Params) (int, string) {
-					file, ok := files[params["file"]]
+					file, ok := soundfiles[params["file"]]
 					if !ok {
 						return 404, "not found"
 					}
