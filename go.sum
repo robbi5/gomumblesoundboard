@@ -15,10 +15,6 @@ github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMyw
 github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.4.0 h1:xsAVV57WRhGj6kEIi8ReJzQlHHqcBYCElAvkovg3B/4=
 github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
-github.com/layeh/gopus v0.0.0-20161224163843-0ebf989153aa h1:jCNvcB4EDuQflwb0f9CZ0Xmo1v257PFyYWWlq03DezA=
-github.com/layeh/gopus v0.0.0-20161224163843-0ebf989153aa/go.mod h1:l3amQeFtdEiZjPsh58I61tySy8v+DC9rDxp4nHyG3uM=
-github.com/layeh/gumble v0.0.0-20150101151939-fdf1c7d8480d h1:Ji+n/QE5A57WrawQ9Fi8VmNsSU0/eItDvpfnhgFQuuk=
-github.com/layeh/gumble v0.0.0-20150101151939-fdf1c7d8480d/go.mod h1:fFNDjYExS2/KiVg9/RY+Al8mRNkmcraQ3O4ghyiYWAE=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/protobuf v0.0.0-20200109180630-ec00e32a8dfd/go.mod h1:DFci5gLYBciE7Vtevhsrf46CRTquxDuWsQurQQe4oz8=
@@ -28,6 +24,7 @@ google.golang.org/protobuf v1.20.1-0.20200309200217-e05f789c0967/go.mod h1:A+miE
 google.golang.org/protobuf v1.21.0/go.mod h1:47Nbq4nVaFHyn7ilMalzfO3qCViNmqZ2kzikPIcrTAo=
 google.golang.org/protobuf v1.23.0 h1:4MY060fB1DLGMB/7MBTLnwQUY6+F09GEiz6SsrNqyzM=
 google.golang.org/protobuf v1.23.0/go.mod h1:EGpADcykh3NcUnDUJcl1+ZksZNG86OlYog2l/sGQquU=
+layeh.com/gopus v0.0.0-20161224163843-0ebf989153aa h1:WNU4LYsgD2UHxgKgB36mL6iMAMOvr127alafSlgBbiA=
 layeh.com/gopus v0.0.0-20161224163843-0ebf989153aa/go.mod h1:AOef7vHz0+v4sWwJnr0jSyHiX/1NgsMoaxl+rEPz/I0=
 layeh.com/gumble v0.0.0-20200528195103-d5a9569f0683 h1:lva4rBZKPoxOCseD6Fx6pu7dUZai9iN/5XvIBJzoUS0=
 layeh.com/gumble v0.0.0-20200528195103-d5a9569f0683/go.mod h1:tWPVA9ZAfImNwabjcd9uDE+Mtz0Hfs7a7G3vxrnrwyc=
