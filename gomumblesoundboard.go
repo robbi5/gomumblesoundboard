@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -11,12 +10,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-martini/martini"
+	"github.com/gin-gonic/gin"
 	"layeh.com/gumble/gumble"
 	"layeh.com/gumble/gumbleffmpeg"
 	"layeh.com/gumble/gumbleutil"
 	_ "layeh.com/gumble/opus"
 )
+
+//go:generate go-assets-builder public -o assets.go
 
 func main() {
 	targetChannel := flag.String("channel", "Root", "channel the bot will join")
@@ -59,10 +60,9 @@ func main() {
 					fmt.Printf("Moved to: %s\n", target.Name)
 				}
 
-				// Start webserver
-				m := martini.Classic()
-				// martini.Static() is used, so public/index.html gets automagically served
-				m.Get("/files.json", func() string {
+				r := gin.Default()
+
+				r.GET("/files.json", func(c *gin.Context) {
 					keys := make([]string, 0, len(soundfiles))
 					for k := range soundfiles {
 						keys = append(keys, k)
@@ -70,42 +70,40 @@ func main() {
 					// Sort keys into alphabetical order. Sick of things moving around
 					ss := sort.StringSlice(keys)
 					ss.Sort()
-
-					js, _ := json.Marshal(ss)
-					return string(js)
+					c.JSON(200, ss)
 				})
-				m.Get("/play/:file", func(params martini.Params) (int, string) {
-					file, ok := soundfiles[params["file"]]
+				r.GET("/play/:file", func(c *gin.Context) {
+					file, ok := soundfiles[c.Param("file")]
 					if !ok {
-						return 404, "not found"
+						c.AbortWithError(404, fmt.Errorf("%s: file not found", c.Param("file")))
 					}
 					stream := gumbleffmpeg.New(e.Client, gumbleffmpeg.SourceFile(file))
 					stream.Volume = volume
 					err := stream.Play()
 					if err != nil {
-						return 400, fmt.Sprintf("%s\n", err)
+						c.AbortWithError(400, err)
 					}
-					return 200, fmt.Sprintf("Playing %s\n", file)
+					c.String(200, fmt.Sprintf("Playing %s\n", file))
 				})
-				m.Get("/volume/:volume", func(params martini.Params) (int, string) {
-					strVol := params["volume"]
+				r.GET("/volume/:volume", func(c *gin.Context) {
+					strVol := c.Param("volume")
 					vol, err := strconv.Atoi(strVol)
 					if err != nil {
-						return 400, "NaN"
+						c.AbortWithError(400, fmt.Errorf("couldn't convert %s to integer: %v", strVol, err))
 					}
 
 					if vol < 0 && vol > 100 {
-						return 400, "Number too small or too large"
+						c.AbortWithError(400, fmt.Errorf("number too small or too large: %s", strVol))
 					}
 
 					volume = float32(vol) / 100
-					return 200, fmt.Sprintf("Volume set to %d\n", vol)
+					c.String(200, fmt.Sprintf("volume set to %d", vol))
 				})
-				m.Get("/stop", func() string {
+				r.GET("/stop", func(c *gin.Context) {
 					stream.Stop()
-					return "ok"
+					c.String(200, "ok")
 				})
-				m.Run()
+				r.Run(":3000")
 			},
 			Disconnect: func(e *gumble.DisconnectEvent) {
 				os.Exit(1)
