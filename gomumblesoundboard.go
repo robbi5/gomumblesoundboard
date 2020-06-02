@@ -49,7 +49,8 @@ func main() {
 		gumbleutil.AutoBitrate,
 		gumbleutil.Listener{
 			Connect: func(e *gumble.ConnectEvent) {
-				var stream *gumbleffmpeg.Stream
+				stream := gumbleffmpeg.New(e.Client, nil)
+				stream.Volume = volume
 
 				for _, dir := range flag.Args() {
 					fmt.Printf("Dir: %s\n", dir)
@@ -99,8 +100,10 @@ func main() {
 					if !ok {
 						c.AbortWithError(404, fmt.Errorf("%s: file not found", c.Param("file")))
 					}
-					stream := gumbleffmpeg.New(e.Client, gumbleffmpeg.SourceFile(file))
-					stream.Volume = volume
+					if stream.State() == gumbleffmpeg.StatePlaying {
+						c.AbortWithError(400, fmt.Errorf("already playing a sound, gtfo"))
+					}
+					stream.Source = gumbleffmpeg.SourceFile(file)
 					err := stream.Play()
 					if err != nil {
 						c.AbortWithError(400, err)
@@ -118,7 +121,7 @@ func main() {
 						c.AbortWithError(400, fmt.Errorf("number too small or too large: %s", strVol))
 					}
 
-					volume = float32(vol) / 100
+					stream.Volume = float32(vol) / 100
 					c.String(200, fmt.Sprintf("volume set to %d", vol))
 				})
 				r.GET("/stop", func(c *gin.Context) {
