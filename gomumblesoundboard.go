@@ -4,20 +4,41 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
 
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	"github.com/jessevdk/go-assets"
 	"layeh.com/gumble/gumble"
 	"layeh.com/gumble/gumbleffmpeg"
 	"layeh.com/gumble/gumbleutil"
 	_ "layeh.com/gumble/opus"
 )
 
-//go:generate go-assets-builder public -o assets.go
+//go:generate go-assets-builder public -s "/public" -o assets.go
+
+type staticAssetsFS struct {
+	fs *assets.FileSystem
+}
+
+func (f staticAssetsFS) Exists(prefix string, path string) bool {
+	if prefix != "/" {
+		panic("We don't support prefixes except for the empty one")
+	}
+
+	_, ok := f.fs.Files[path]
+	return ok
+}
+
+func (f staticAssetsFS) Open(name string) (http.File, error) {
+	file, err := f.fs.Open(name)
+	return file, err
+}
 
 func main() {
 	targetChannel := flag.String("channel", "Root", "channel the bot will join")
@@ -61,6 +82,7 @@ func main() {
 				}
 
 				r := gin.Default()
+				r.Use(static.Serve("/", staticAssetsFS{fs: Assets}))
 
 				r.GET("/files.json", func(c *gin.Context) {
 					keys := make([]string, 0, len(soundfiles))
