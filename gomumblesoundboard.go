@@ -42,8 +42,9 @@ func (f staticAssetsFS) Open(name string) (http.File, error) {
 
 func main() {
 	targetChannel := flag.String("channel", "Root", "channel the bot will join")
+	maxVolume := flag.String("maxvol", "100", "Set the maximum Volume in %, the volume set in the UI is multiplied with it")
+	var volume float32 = 1
 	soundfiles := make(map[string]string)
-	var volume float32 = 0.5
 
 	gumbleutil.Main(
 		gumbleutil.AutoBitrate,
@@ -66,6 +67,14 @@ func main() {
 						}
 					}
 				}
+
+				maxVolumeF, err := strconv.Atoi(*maxVolume)
+				if err != nil {
+					fmt.Printf("Invalid MaxVolume %s", maxVolumeF)
+					os.Exit(1)
+				}
+				maxvol := float32(maxVolumeF) / 100
+				fmt.Printf("maximum Volume: %.1f%%\n", maxvol*100)
 
 				fmt.Printf("GoMumbleSoundboard loaded (%d files)\n", len(soundfiles))
 				fmt.Printf("Connected to %s\n", e.Client.Conn.RemoteAddr())
@@ -127,8 +136,8 @@ func main() {
 						return
 					}
 
-					volume = float32(vol) / 100
-					c.String(200, fmt.Sprintf("volume set to %d", vol))
+					volume = float32(vol) / 100 * maxvol
+					c.String(200, fmt.Sprintf("volume set to %.1f%%", volume*100))
 				})
 				r.GET("/stop", func(c *gin.Context) {
 					stream.Stop()
