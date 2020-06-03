@@ -106,6 +106,7 @@ func main() {
 						return
 					}
 					stream = gumbleffmpeg.New(e.Client, gumbleffmpeg.SourceFile(file))
+					stream.Volume = volume
 					err := stream.Play()
 					if err != nil {
 						c.AbortWithError(400, err)
@@ -126,7 +127,7 @@ func main() {
 						return
 					}
 
-					stream.Volume = float32(vol) / 100
+					volume = float32(vol) / 100
 					c.String(200, fmt.Sprintf("volume set to %d", vol))
 				})
 				r.GET("/stop", func(c *gin.Context) {
