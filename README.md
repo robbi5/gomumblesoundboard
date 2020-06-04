@@ -21,7 +21,7 @@ go get github.com/feuerrot/gomumblesoundboard
 
 ## Usage
 ```
-$GOPATH/bin/gomumblesoundboard --server yourmumbleserver.com:64738 ~/soundboard/*
+$GOPATH/bin/gomumblesoundboard --server yourmumbleserver.com:64738 ~/soundboard
 ```
 
 Then open [http://localhost:3000](http://localhost:3000) and press all the buttons!
