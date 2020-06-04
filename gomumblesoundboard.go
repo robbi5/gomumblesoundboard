@@ -53,6 +53,8 @@ func main() {
 				stream := gumbleffmpeg.New(e.Client, nil)
 				stream.Volume = volume
 
+				e.Client.Self.SetSelfDeafened(true)
+
 				for _, dir := range flag.Args() {
 					fmt.Printf("Dir: %s\n", dir)
 					files, err := ioutil.ReadDir(dir)
@@ -114,6 +116,7 @@ func main() {
 						c.AbortWithError(400, fmt.Errorf("already playing a sound, gtfo"))
 						return
 					}
+					e.Client.Self.SetSelfMuted(false)
 					stream = gumbleffmpeg.New(e.Client, gumbleffmpeg.SourceFile(file))
 					stream.Volume = volume
 					err := stream.Play()
@@ -121,6 +124,10 @@ func main() {
 						c.AbortWithError(400, err)
 						return
 					}
+					go func() {
+						stream.Wait()
+						e.Client.Self.SetSelfDeafened(true)
+					}()
 					c.String(200, fmt.Sprintf("Playing %s\n", file))
 				})
 				r.GET("/volume/:volume", func(c *gin.Context) {
