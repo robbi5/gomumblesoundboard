@@ -72,7 +72,7 @@ func main() {
 
 				maxVolumeF, err := strconv.Atoi(*maxVolume)
 				if err != nil {
-					fmt.Printf("Invalid MaxVolume %s", maxVolumeF)
+					fmt.Printf("Invalid MaxVolume %d", maxVolumeF)
 					os.Exit(1)
 				}
 				maxvol := float32(maxVolumeF) / 100
