@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -21,6 +20,8 @@ import (
 )
 
 //go:generate go-assets-builder public -s "/public" -o assets.go
+
+var soundfiles map[string]string
 
 type staticAssetsFS struct {
 	fs *assets.FileSystem
@@ -40,11 +41,50 @@ func (f staticAssetsFS) Open(name string) (http.File, error) {
 	return file, err
 }
 
+func scanDirsFunc(path string, info os.FileInfo, err error) error {
+	if err != nil {
+		return err
+	}
+
+	validSuffix := []string{
+		".mp3",
+		".ogg",
+		".flac",
+		".opus",
+		".wav",
+	}
+	validSuffixCheck := false
+	for _, s := range validSuffix {
+		if strings.HasSuffix(info.Name(), s) {
+			validSuffixCheck = true
+		}
+	}
+	if !validSuffixCheck {
+		return nil
+	}
+
+	if info.IsDir() == false {
+		fmt.Printf("File: %s\t%s\n", info.Name(), path)
+		soundfiles[info.Name()] = path
+	}
+
+	return nil
+}
+
+func scanDirs(directories []string) {
+	soundfiles = make(map[string]string)
+	for _, dir := range directories {
+		err := filepath.Walk(dir, scanDirsFunc)
+		if err != nil {
+			fmt.Printf("Error at %s: %v", dir, err)
+		}
+	}
+}
+
 func main() {
 	targetChannel := flag.String("channel", "Root", "channel the bot will join")
 	maxVolume := flag.String("maxvol", "100", "Set the maximum Volume in %, the volume set in the UI is multiplied with it")
 	var volume float32 = 1
-	soundfiles := make(map[string]string)
 
 	gumbleutil.Main(
 		gumbleutil.AutoBitrate,
@@ -52,23 +92,9 @@ func main() {
 			Connect: func(e *gumble.ConnectEvent) {
 				stream := gumbleffmpeg.New(e.Client, nil)
 				stream.Volume = volume
+				scanDirs(flag.Args())
 
 				e.Client.Self.SetSelfDeafened(true)
-
-				for _, dir := range flag.Args() {
-					fmt.Printf("Dir: %s\n", dir)
-					files, err := ioutil.ReadDir(dir)
-					if err != nil {
-						continue
-					}
-
-					for _, file := range files {
-						if file.IsDir() == false {
-							fmt.Printf("File: %s\t%s\n", file.Name(), filepath.Join(dir, file.Name()))
-							soundfiles[file.Name()] = filepath.Join(dir, file.Name())
-						}
-					}
-				}
 
 				maxVolumeF, err := strconv.Atoi(*maxVolume)
 				if err != nil {
@@ -149,6 +175,10 @@ func main() {
 				r.GET("/stop", func(c *gin.Context) {
 					stream.Stop()
 					c.String(200, "ok")
+				})
+				r.GET("/rescan", func(c *gin.Context) {
+					scanDirs(flag.Args())
+					c.Redirect(http.StatusTemporaryRedirect, "/")
 				})
 				r.Run(":3000")
 			},
