@@ -10,9 +10,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/feuerrot/safs"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
-	"github.com/jessevdk/go-assets"
 	"layeh.com/gumble/gumble"
 	"layeh.com/gumble/gumbleffmpeg"
 	"layeh.com/gumble/gumbleutil"
@@ -22,24 +22,6 @@ import (
 //go:generate go-assets-builder public -s "/public" -o assets.go
 
 var soundfiles map[string]string
-
-type staticAssetsFS struct {
-	fs *assets.FileSystem
-}
-
-func (f staticAssetsFS) Exists(prefix string, path string) bool {
-	if prefix != "/" {
-		panic("We don't support prefixes except for the empty one")
-	}
-
-	_, ok := f.fs.Files[path]
-	return ok
-}
-
-func (f staticAssetsFS) Open(name string) (http.File, error) {
-	file, err := f.fs.Open(name)
-	return file, err
-}
 
 func scanDirsFunc(path string, info os.FileInfo, err error) error {
 	if err != nil {
@@ -120,7 +102,7 @@ func main() {
 				}
 
 				r := gin.Default()
-				r.Use(static.Serve("/", staticAssetsFS{fs: Assets}))
+				r.Use(static.Serve("/", safs.StaticAssetsFS{FS: Assets}))
 
 				r.GET("/files.json", func(c *gin.Context) {
 					keys := make([]string, 0, len(soundfiles))
