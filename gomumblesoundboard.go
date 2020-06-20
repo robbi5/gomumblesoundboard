@@ -34,6 +34,7 @@ func scanDirsFunc(path string, info os.FileInfo, err error) error {
 		".flac",
 		".opus",
 		".wav",
+		".MPG",
 	}
 	validSuffixCheck := false
 	for _, s := range validSuffix {
