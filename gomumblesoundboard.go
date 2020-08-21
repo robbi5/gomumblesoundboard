@@ -163,6 +163,9 @@ func main() {
 					scanDirs(flag.Args())
 					c.Redirect(http.StatusTemporaryRedirect, "/")
 				})
+				r.GET("/restart", func(c *gin.Context) {
+					os.Exit(255)
+				})
 				r.Run(":3000")
 			},
 			Disconnect: func(e *gumble.DisconnectEvent) {
