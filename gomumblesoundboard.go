@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -21,9 +22,18 @@ import (
 
 //go:generate go-assets-builder public -s "/public" -o assets.go
 
-var soundfiles map[string]struct{}
+type File struct {
+	Name   string `json:"name"`
+	Folder string `json:"folder"`
+}
 
-func scanDirsFunc(path string, info os.FileInfo, err error) error {
+func (f File) String() string {
+	return f.Folder + "/" + f.Name
+}
+
+var soundfiles map[string]File
+
+func scanDirsFunc(l string, info os.FileInfo, err error) error {
 	if err != nil {
 		return err
 	}
@@ -47,15 +57,22 @@ func scanDirsFunc(path string, info os.FileInfo, err error) error {
 	}
 
 	if info.IsDir() == false {
-		fmt.Printf("File: %s\t%s\n", info.Name(), path)
-		soundfiles[path] = struct{}{}
+		fmt.Printf("File: %s\t%s\n", info.Name(), l)
+		dir, file := path.Split(l)
+		split := strings.Split(dir, "/")
+		f := File{
+			Name:   file,
+			Folder: split[len(split)-2],
+		}
+
+		soundfiles[f.String()] = f
 	}
 
 	return nil
 }
 
 func scanDirs(directories []string) {
-	soundfiles = make(map[string]struct{})
+	soundfiles = make(map[string]File)
 	for _, dir := range directories {
 		err := filepath.Walk(dir, scanDirsFunc)
 		if err != nil {
@@ -106,17 +123,11 @@ func main() {
 				r.Use(static.Serve("/", safs.StaticAssetsFS{FS: Assets}))
 
 				r.GET("/files.json", func(c *gin.Context) {
-					type File struct {
-						Name   string `json:"name"`
-						Folder string `json:"folder"`
-					}
 					files := make([]File, 0)
-					for k := range soundfiles {
-						dir, file := path.Split(k)
-						split := strings.Split(dir, "/")
+					for _, f := range soundfiles {
 						files = append(files, File{
-							Name:   file,
-							Folder: split[len(split)-2],
+							Name:   f.Name,
+							Folder: f.Folder,
 						})
 					}
 
@@ -124,21 +135,24 @@ func main() {
 					c.JSON(200, files)
 				})
 				r.GET("/play/:file", func(c *gin.Context) {
-					_, ok := soundfiles[c.Param("file")]
+					unescape, err := url.PathUnescape(c.Param("file"))
+					if err != nil {
+						c.AbortWithError(404, err)
+						return
+					}
+					f, ok := soundfiles[unescape]
 					if !ok {
-						c.AbortWithError(404, fmt.Errorf("%s: file not found", c.Param("file")))
+						c.AbortWithError(404, fmt.Errorf("%s: file not found", unescape))
 						return
 					}
 					if stream.State() == gumbleffmpeg.StatePlaying {
 						c.AbortWithError(400, fmt.Errorf("already playing a sound, gtfo"))
 						return
 					}
-					file := c.Param("file")
 					e.Client.Self.SetSelfMuted(false)
-					stream = gumbleffmpeg.New(e.Client, gumbleffmpeg.SourceFile(file))
+					stream = gumbleffmpeg.New(e.Client, gumbleffmpeg.SourceFile(f.String()))
 					stream.Volume = volume
-					err := stream.Play()
-					if err != nil {
+					if err := stream.Play(); err != nil {
 						c.AbortWithError(400, err)
 						return
 					}
@@ -146,7 +160,7 @@ func main() {
 						stream.Wait()
 						e.Client.Self.SetSelfDeafened(true)
 					}()
-					c.String(200, fmt.Sprintf("Playing %s\n", file))
+					c.String(200, fmt.Sprintf("Playing %s\n", f.String()))
 				})
 				r.GET("/volume/:volume", func(c *gin.Context) {
 					strVol := c.Param("volume")

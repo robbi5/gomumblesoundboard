@@ -181,7 +181,7 @@
             btn.classList.add("sound");
             btn.classList.add("play");
             btn.innerHTML = file.name;
-            btn.dataset.file = file.name;
+            btn.dataset.file = file.folder + "/" + file.name;
             group.appendChild(btn);
         });
     });
@@ -208,7 +208,7 @@
             file = el.dataset.file;
 
         // start playback of the chosen sound file
-        get('/play/' + file).then(function () {
+        get('/play/' + encodeURIComponent(encodeURIComponent(file))).then(function () {
             el.classList.add("done");
             removeClassAfter(el, "done", 1000);
         }).catch(function () {
