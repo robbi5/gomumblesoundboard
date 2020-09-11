@@ -147,14 +147,22 @@
 
       // create a button for each sound file
       files.forEach(function(file) {
+        var group = document.getElementById(file.folder);
+        if (group === null) {
+          group = document.createElement("div");
+          var header = document.createElement("h2");
+          header.innerText = file.folder;
+          group.appendChild(header);
+          wrapEl.appendChild(group);
+        }
         var btn = document.createElement("button");
         btn.classList.add("mui-btn");
         btn.classList.add("mui-btn--raised");
         btn.classList.add("sound");
         btn.classList.add("play");
-        btn.innerHTML = file;
-        btn.dataset.file = file;
-        wrapEl.appendChild(btn);
+        btn.innerHTML = file.name;
+        btn.dataset.file = file.name;
+        group.appendChild(btn);
       });
     });
 

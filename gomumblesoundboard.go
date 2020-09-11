@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -21,7 +21,7 @@ import (
 
 //go:generate go-assets-builder public -s "/public" -o assets.go
 
-var soundfiles map[string]string
+var soundfiles map[string]struct{}
 
 func scanDirsFunc(path string, info os.FileInfo, err error) error {
 	if err != nil {
@@ -48,14 +48,14 @@ func scanDirsFunc(path string, info os.FileInfo, err error) error {
 
 	if info.IsDir() == false {
 		fmt.Printf("File: %s\t%s\n", info.Name(), path)
-		soundfiles[info.Name()] = path
+		soundfiles[path] = struct{}{}
 	}
 
 	return nil
 }
 
 func scanDirs(directories []string) {
-	soundfiles = make(map[string]string)
+	soundfiles = make(map[string]struct{})
 	for _, dir := range directories {
 		err := filepath.Walk(dir, scanDirsFunc)
 		if err != nil {
@@ -106,17 +106,25 @@ func main() {
 				r.Use(static.Serve("/", safs.StaticAssetsFS{FS: Assets}))
 
 				r.GET("/files.json", func(c *gin.Context) {
-					keys := make([]string, 0, len(soundfiles))
-					for k := range soundfiles {
-						keys = append(keys, k)
+					type File struct {
+						Name   string `json:"name"`
+						Folder string `json:"folder"`
 					}
+					files := make([]File, 0)
+					for k := range soundfiles {
+						dir, file := path.Split(k)
+						split := strings.Split(dir, "/")
+						files = append(files, File{
+							Name:   file,
+							Folder: split[len(split)-2],
+						})
+					}
+
 					// Sort keys into alphabetical order. Sick of things moving around
-					ss := sort.StringSlice(keys)
-					ss.Sort()
-					c.JSON(200, ss)
+					c.JSON(200, files)
 				})
 				r.GET("/play/:file", func(c *gin.Context) {
-					file, ok := soundfiles[c.Param("file")]
+					_, ok := soundfiles[c.Param("file")]
 					if !ok {
 						c.AbortWithError(404, fmt.Errorf("%s: file not found", c.Param("file")))
 						return
@@ -125,6 +133,7 @@ func main() {
 						c.AbortWithError(400, fmt.Errorf("already playing a sound, gtfo"))
 						return
 					}
+					file := c.Param("file")
 					e.Client.Self.SetSelfMuted(false)
 					stream = gumbleffmpeg.New(e.Client, gumbleffmpeg.SourceFile(file))
 					stream.Volume = volume

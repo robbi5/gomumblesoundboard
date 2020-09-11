@@ -9,10 +9,6 @@ github.com/dchote/go-openal v0.0.0-20171116030048-f4a9a141d372/go.mod h1:74z+CYu
 github.com/elazarl/go-bindata-assetfs v1.0.0/go.mod h1:v+YaWX3bdea5J/mo8dSETolEo7R71Vk1u8bnjau5yw4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
-github.com/feuerrot/safs v0.0.0-20200618232500-d84b4bdcbb18 h1:l+gAEeYn1tw2JJMJVeivwoU8xbIvnMFPJtsVDmcrR/g=
-github.com/feuerrot/safs v0.0.0-20200618232500-d84b4bdcbb18/go.mod h1:mVRfrXOxyT8YBKz5WHNkZ2d0wJzJ8+Wc2B2+KCSnz84=
-github.com/feuerrot/safs v0.0.0-20200618232924-c8d99f15b623 h1:/9DCcvg3xG0US1JT+DJT8KSHz34F5hAu6wOQVBQkCn8=
-github.com/feuerrot/safs v0.0.0-20200618232924-c8d99f15b623/go.mod h1:mVRfrXOxyT8YBKz5WHNkZ2d0wJzJ8+Wc2B2+KCSnz84=
 github.com/feuerrot/safs v0.0.0-20200618233357-a1e956d6dc74 h1:V1WLlV/kIrybAaJkZjJk/ZMONXPSZ+qfStF35Gjx5Us=
 github.com/feuerrot/safs v0.0.0-20200618233357-a1e956d6dc74/go.mod h1:mVRfrXOxyT8YBKz5WHNkZ2d0wJzJ8+Wc2B2+KCSnz84=
 github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=
