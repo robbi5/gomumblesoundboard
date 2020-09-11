@@ -23,7 +23,7 @@
     #wrap {
       text-align: center;
     }
-    
+
     #volume {
       position: fixed;
       top: 5px;
@@ -35,7 +35,7 @@
       justify-content: center;
       flex-direction: column;
     }
-    
+
     #slide {
       cursor: pointer;
     }
@@ -143,13 +143,33 @@
     // fetch the sound files now
     get('/files.json').then(function(resp) {
       var files = JSON.parse(resp);
-      files.sort();
+      var folders = new Set();
+
+      const sort = (a, b) => {
+        let fa = a.toLowerCase(),
+                fb = b.toLowerCase();
+
+        if (fa < fb) {
+          return -1;
+        }
+        if (fa > fb) {
+          return 1;
+        }
+        return 0;
+      }
+
+      files.map(value => folders.add(value.folder));
+      folders = Array.from(folders)
+      folders.sort(sort);
+
+      files.sort((a, b) => sort(a.name, b.name));
 
       // create a button for each sound file
       files.forEach(function(file) {
         var group = document.getElementById(file.folder);
         if (group === null) {
           group = document.createElement("div");
+          group.id = file.folder;
           var header = document.createElement("h2");
           header.innerText = file.folder;
           group.appendChild(header);
@@ -172,7 +192,7 @@
       var newVol = volSlider.value;
       get('/volume/' + newVol);
     });
-    
+
     // wire the stop button
     stopBtn.addEventListener('click', function(ev) {
       // stop the sound playback
