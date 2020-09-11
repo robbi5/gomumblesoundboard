@@ -1,129 +1,129 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8"/>
-  <title>GoMumbleSoundboard</title>
+    <meta charset="utf-8"/>
+    <title>GoMumbleSoundboard</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
-  <!-- incluide MUI for material design -->
-  <link href="mui.min.css" rel="stylesheet" type="text/css" />
-  <script src="mui.min.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      background-color: #eee;
-    }
+    <!-- incluide MUI for material design -->
+    <link href="mui.min.css" rel="stylesheet" type="text/css"/>
+    <script src="mui.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #eee;
+        }
 
-    h1 {
-      text-align: center;
-    }
+        h1 {
+            text-align: center;
+        }
 
-    #wrap {
-      text-align: center;
-    }
+        #wrap {
+            text-align: center;
+        }
 
-    #volume {
-      position: fixed;
-      top: 5px;
-      left: 5px;
-      min-height: 6em;
-      z-index: 100;
-      cursor: auto;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-    }
+        #volume {
+            position: fixed;
+            top: 5px;
+            left: 5px;
+            min-height: 6em;
+            z-index: 100;
+            cursor: auto;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
 
-    #slide {
-      cursor: pointer;
-    }
+        #slide {
+            cursor: pointer;
+        }
 
-    #stop {
-      position: fixed;
-      top: 5px;
-      right: 5px;
-      min-height: 6em;
-      z-index: 100;
-    }
+        #stop {
+            position: fixed;
+            top: 5px;
+            right: 5px;
+            min-height: 6em;
+            z-index: 100;
+        }
 
-    #stop:active {
-      background-color: #F22613;
-    }
+        #stop:active {
+            background-color: #F22613;
+        }
 
-    .sound {
-      -webkit-appearance: none;
-      width: 15em;
-      min-height: 7em;
-      transition: background-color 0.5s;
-      word-wrap: break-word;
-      white-space: normal;
-      text-transform: none;
-      line-height: 1.15em;
-    }
+        .sound {
+            -webkit-appearance: none;
+            width: 15em;
+            min-height: 7em;
+            transition: background-color 0.5s;
+            word-wrap: break-word;
+            white-space: normal;
+            text-transform: none;
+            line-height: 1.15em;
+        }
 
-    .sound.done {
-      background-color: #87D37C;
-    }
+        .sound.done {
+            background-color: #87D37C;
+        }
 
-    .sound.fail {
-      background-color: #F22613;
-    }
+        .sound.fail {
+            background-color: #F22613;
+        }
 
-    #buttons {
-      text-align: center;
-    }
+        #buttons {
+            text-align: center;
+        }
 
-    #search-box {
-      width: 100%;
-      margin-bottom: 0.5em;
-      font-size: 1.8em;
-      line-height: 1.8em;
-      text-align: center;
-    }
-  </style>
+        #search-box {
+            width: 100%;
+            margin-bottom: 0.5em;
+            font-size: 1.8em;
+            line-height: 1.8em;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-  <div class="mui-container-fluid">
+<div class="mui-container-fluid">
     <div class="mui-row">
-      <div class="mui-col-sm-10 mui-col-sm-offset-1">
-        <h1>GoMumbleSoundboard</h1>
-        <div class="mui-panel">
-          <div id="volume" class="mui-btn mui-btn--raised sound">
-            Volume
-            <input id="slide" type="range" min="5" max="100" step="5" value="100">
-          </div>
-          <div class="mui-textfield">
-            <input id="search-box" type="text" placeholder="search (separate terms with space)">
-          </div>
-          <button class="mui-btn mui-btn--raised sound" id="stop">Stop!</button>
-          <div id="buttons"></div>
+        <div class="mui-col-sm-10 mui-col-sm-offset-1">
+            <h1>GoMumbleSoundboard</h1>
+            <div class="mui-panel">
+                <div id="volume" class="mui-btn mui-btn--raised sound">
+                    Volume
+                    <input id="slide" type="range" min="5" max="100" step="5" value="100">
+                </div>
+                <div class="mui-textfield">
+                    <input id="search-box" type="text" placeholder="search (separate terms with space)">
+                </div>
+                <button class="mui-btn mui-btn--raised sound" id="stop">Stop!</button>
+                <div id="buttons"></div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  <script>
+<script>
     /**
      * fetches the sound files from the go backend
      */
     function get(url) {
-      return new Promise(function(resolve, reject) {
-        var req = new XMLHttpRequest();
-        req.open('GET', url);
-        req.onload = function() {
-          if (req.status == 200) {
-            resolve(req.response);
-          } else {
-            reject(Error(req.statusText));
-          }
-        };
-        req.onerror = function() {
-          reject(Error("Network Error"));
-        };
-        req.send();
-      });
+        return new Promise(function (resolve, reject) {
+            var req = new XMLHttpRequest();
+            req.open('GET', url);
+            req.onload = function () {
+                if (req.status == 200) {
+                    resolve(req.response);
+                } else {
+                    reject(Error(req.statusText));
+                }
+            };
+            req.onerror = function () {
+                reject(Error("Network Error"));
+            };
+            req.send();
+        });
     };
 
     /**
@@ -131,128 +131,129 @@
      * (used to indicate button press/playback of a sound file)
      */
     function removeClassAfter(el, cssclass, msec) {
-      setTimeout(function() {
-        el.classList.remove(cssclass);
-      }, msec);
+        setTimeout(function () {
+            el.classList.remove(cssclass);
+        }, msec);
     }
 
     var wrapEl = document.getElementById('buttons'),
-      volSlider = document.getElementById('slide'),
-      stopBtn = document.getElementById('stop');
+        volSlider = document.getElementById('slide'),
+        stopBtn = document.getElementById('stop');
 
     // fetch the sound files now
-    get('/files.json').then(function(resp) {
-      var files = JSON.parse(resp);
-      var folders = new Set();
+    get('/files.json').then(function (resp) {
+        var files = JSON.parse(resp);
+        var folders = new Set();
 
-      const sort = (a, b) => {
-        let fa = a.toLowerCase(),
+        const sort = (a, b) => {
+            let fa = a.toLowerCase(),
                 fb = b.toLowerCase();
 
-        if (fa < fb) {
-          return -1;
+            if (fa < fb) {
+                return -1;
+            }
+            if (fa > fb) {
+                return 1;
+            }
+            return 0;
         }
-        if (fa > fb) {
-          return 1;
-        }
-        return 0;
-      }
 
-      files.map(value => folders.add(value.folder));
-      folders = Array.from(folders)
-      folders.sort(sort);
+        files.map(value => folders.add(value.folder));
+        folders = Array.from(folders)
+        folders.sort(sort);
 
-      files.sort((a, b) => sort(a.name, b.name));
+        files.sort((a, b) => sort(a.name, b.name));
 
-      // create a button for each sound file
-      files.forEach(function(file) {
-        var group = document.getElementById(file.folder);
-        if (group === null) {
-          group = document.createElement("div");
-          group.id = file.folder;
-          var header = document.createElement("h2");
-          header.innerText = file.folder;
-          group.appendChild(header);
-          wrapEl.appendChild(group);
-        }
-        var btn = document.createElement("button");
-        btn.classList.add("mui-btn");
-        btn.classList.add("mui-btn--raised");
-        btn.classList.add("sound");
-        btn.classList.add("play");
-        btn.innerHTML = file.name;
-        btn.dataset.file = file.name;
-        group.appendChild(btn);
-      });
+        // create a button for each sound file
+        files.forEach(function (file) {
+            var group = document.getElementById(file.folder);
+            if (group === null) {
+                group = document.createElement("div");
+                group.id = file.folder;
+                var header = document.createElement("h2");
+                header.innerText = file.folder;
+                group.appendChild(header);
+                wrapEl.appendChild(group);
+            }
+            var btn = document.createElement("button");
+            btn.classList.add("mui-btn");
+            btn.classList.add("mui-btn--raised");
+            btn.classList.add("sound");
+            btn.classList.add("play");
+            btn.innerHTML = file.name;
+            btn.dataset.file = file.name;
+            group.appendChild(btn);
+        });
     });
 
     // wire volume slider
-    volSlider.addEventListener('change', function(ev) {
-      // change volume
-      var newVol = volSlider.value;
-      get('/volume/' + newVol);
+    volSlider.addEventListener('change', function (ev) {
+        // change volume
+        var newVol = volSlider.value;
+        get('/volume/' + newVol);
     });
 
     // wire the stop button
-    stopBtn.addEventListener('click', function(ev) {
-      // stop the sound playback
-      get('/stop');
+    stopBtn.addEventListener('click', function (ev) {
+        // stop the sound playback
+        get('/stop');
     });
 
     // add click event handler to start/stop sound playback
-    document.addEventListener('click', function(ev) {
-      // check if this is a sound playback button
-      if (!ev.target.classList.contains("play")) return;
+    document.addEventListener('click', function (ev) {
+        // check if this is a sound playback button
+        if (!ev.target.classList.contains("play")) return;
 
-      var el = ev.target,
-        file = el.dataset.file;
+        var el = ev.target,
+            file = el.dataset.file;
 
-      // start playback of the chosen sound file
-      get('/play/' + file).then(function() {
-        el.classList.add("done");
-        removeClassAfter(el, "done", 1000);
-      }).catch(function() {
-        el.classList.add("fail");
-        removeClassAfter(el, "fail", 1000);
-      });
+        // start playback of the chosen sound file
+        get('/play/' + file).then(function () {
+            el.classList.add("done");
+            removeClassAfter(el, "done", 1000);
+        }).catch(function () {
+            el.classList.add("fail");
+            removeClassAfter(el, "fail", 1000);
+        });
     }, false);
 
     // input handled function for the search field
     function handleSearchInput(e) {
 
-      // get the individual search terms
-      var searchTerms = e.srcElement.value.split(" ");
+        // get the individual search terms
+        var searchTerms = e.srcElement.value.split(" ");
 
-      // loop through all the search terms and hide sound file buttons that
-      // don't match
-      searchTerms.forEach(function(term, idx, array) {
+        // loop through all the search terms and hide sound file buttons that
+        // don't match
+        searchTerms.forEach(function (term, idx, array) {
 
-        // check each sound file button
-        wrapEl.childNodes.forEach(function(b) {
-          var elemContent = b.innerHTML.toLowerCase();
+            // check each sound file button
+            wrapEl.childNodes.forEach(function (b) {
+                var elemContent = b.innerHTML.toLowerCase();
 
-          // if the current sound file doesn't contain the current search term
-          if (elemContent.indexOf(term.toLowerCase()) === -1) {
-            // hide the button
-            b.style.display = "none";
-            // move on
-            return;
-          };
+                // if the current sound file doesn't contain the current search term
+                if (elemContent.indexOf(term.toLowerCase()) === -1) {
+                    // hide the button
+                    b.style.display = "none";
+                    // move on
+                    return;
+                }
+                ;
 
-          // check if this is the last search term
-          if (idx === array.length - 1) {
-            b.style.display = "inline-block";
-          }
+                // check if this is the last search term
+                if (idx === array.length - 1) {
+                    b.style.display = "inline-block";
+                }
+            });
         });
-      });
     }
 
     // register the input handler function when the doc as been loaded
-    onload = function() {
-      var e = document.getElementById('search-box');
-      e.oninput = handleSearchInput;
-      e.onpropertychange = e.oninput; // for IE8
+    onload = function () {
+        var e = document.getElementById('search-box');
+        e.oninput = handleSearchInput;
+        e.onpropertychange = e.oninput; // for IE8
     };
-  </script>
+</script>
 </body>
 </html>
