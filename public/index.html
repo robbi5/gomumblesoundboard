@@ -23,7 +23,7 @@
     #wrap {
       text-align: center;
     }
-    
+
     #volume {
       position: fixed;
       top: 5px;
@@ -35,7 +35,7 @@
       justify-content: center;
       flex-direction: column;
     }
-    
+
     #slide {
       cursor: pointer;
     }
@@ -150,6 +150,7 @@
         var group = document.getElementById(file.folder);
         if (group === null) {
           group = document.createElement("div");
+          group.id = file.folder;
           var header = document.createElement("h2");
           header.innerText = file.folder;
           group.appendChild(header);
