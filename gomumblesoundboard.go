@@ -23,8 +23,9 @@ import (
 //go:generate go-assets-builder public -s "/public" -o assets.go
 
 type File struct {
-	Name   string `json:"name"`
-	Folder string `json:"folder"`
+	Name     string `json:"name"`
+	Folder   string `json:"folder"`
+	FullPath string
 }
 
 func (f File) String() string {
@@ -61,8 +62,9 @@ func scanDirsFunc(l string, info os.FileInfo, err error) error {
 		dir, file := path.Split(l)
 		split := strings.Split(dir, "/")
 		f := File{
-			Name:   file,
-			Folder: split[len(split)-2],
+			FullPath: l,
+			Name:     file,
+			Folder:   split[len(split)-2],
 		}
 
 		soundfiles[f.String()] = f
@@ -150,7 +152,7 @@ func main() {
 						return
 					}
 					e.Client.Self.SetSelfMuted(false)
-					stream = gumbleffmpeg.New(e.Client, gumbleffmpeg.SourceFile(f.String()))
+					stream = gumbleffmpeg.New(e.Client, gumbleffmpeg.SourceFile(f.FullPath))
 					stream.Volume = volume
 					if err := stream.Play(); err != nil {
 						c.AbortWithError(400, err)
@@ -160,7 +162,7 @@ func main() {
 						stream.Wait()
 						e.Client.Self.SetSelfDeafened(true)
 					}()
-					c.String(200, fmt.Sprintf("Playing %s\n", f.String()))
+					c.String(200, fmt.Sprintf("Playing %s\n", f.FullPath))
 				})
 				r.GET("/volume/:volume", func(c *gin.Context) {
 					strVol := c.Param("volume")
