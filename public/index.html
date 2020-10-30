@@ -82,6 +82,17 @@
             line-height: 1.8em;
             text-align: center;
         }
+
+
+        @media (max-width: 595px) {
+            /* try displaying two columns for longer */
+            .sound {
+                width: 10em;
+                padding: 0 5px; /* overriding mui */
+            }
+        }
+        /* at <=543px width mui does it's own mobile optimization and suddenly
+           we can fit three columns … */
     </style>
 </head>
 <body>
