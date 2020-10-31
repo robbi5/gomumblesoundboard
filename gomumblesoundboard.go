@@ -41,6 +41,7 @@ func scanDirsFunc(l string, info os.FileInfo, err error) error {
 
 	validSuffix := []string{
 		".mp3",
+		".m4a",
 		".ogg",
 		".flac",
 		".opus",
