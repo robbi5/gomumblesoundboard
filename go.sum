@@ -1,0 +1,10 @@
+github.com/codegangsta/inject v0.0.0-20140630231407-4b8172520a03 h1:SQR4QbNeg88VRohi+tlBo1rznUa2VWehq08n2NsrZjo=
+github.com/codegangsta/inject v0.0.0-20140630231407-4b8172520a03/go.mod h1:4Zcjuz89kmFXt9morQgcfYZAYZ5n8WHjt81YYWIwtTM=
+github.com/go-martini/martini v0.0.0-20141229124657-bbd489b35fd7 h1:6AHTGoNuCSHN0FUf9mIRs86u/glOqut14cUioHh3oAM=
+github.com/go-martini/martini v0.0.0-20141229124657-bbd489b35fd7/go.mod h1:/P9AEU963A2AYjv4d1V5eVL1CQbEJq6aCNHDDjibzu8=
+github.com/golang/protobuf v0.0.0-20141222051541-3ea3e05dbfae h1:ZQwZSCpth9Bipw1nFdXuEGlkJamDlcvg6dk49D939bY=
+github.com/golang/protobuf v0.0.0-20141222051541-3ea3e05dbfae/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
+github.com/layeh/gopus v0.0.0-20141213194033-5bf552969d38 h1:3HCbFj8IAd0V7ow1jsft5NgWKJCXZZrpLaevHIiWjAM=
+github.com/layeh/gopus v0.0.0-20141213194033-5bf552969d38/go.mod h1:l3amQeFtdEiZjPsh58I61tySy8v+DC9rDxp4nHyG3uM=
+github.com/layeh/gumble v0.0.0-20150101151939-fdf1c7d8480d h1:Ji+n/QE5A57WrawQ9Fi8VmNsSU0/eItDvpfnhgFQuuk=
+github.com/layeh/gumble v0.0.0-20150101151939-fdf1c7d8480d/go.mod h1:fFNDjYExS2/KiVg9/RY+Al8mRNkmcraQ3O4ghyiYWAE=
