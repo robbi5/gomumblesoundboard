@@ -19,3 +19,5 @@ require (
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	layeh.com/gumble v0.0.0-20200528195103-d5a9569f0683
 )
+
+replace layeh.com/gopus => github.com/iu0jgo/gopus v0.0.0-20221103094113-7ddffc64b02e
