@@ -1,8 +1,10 @@
 package main
 
 import (
+	"embed"
 	"flag"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"net/url"
 	"os"
@@ -11,8 +13,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/feuerrot/safs"
-	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"layeh.com/gumble/gumble"
 	"layeh.com/gumble/gumbleffmpeg"
@@ -20,7 +20,8 @@ import (
 	_ "layeh.com/gumble/opus"
 )
 
-//go:generate go-assets-builder public -s "/public" -o assets.go
+//go:embed public
+var Assets embed.FS
 
 type File struct {
 	Name     string `json:"name"`
@@ -122,8 +123,11 @@ func main() {
 					fmt.Printf("Moved to: %s\n", target.Name)
 				}
 
-				r := gin.Default()
-				r.Use(static.Serve("/", safs.StaticAssetsFS{FS: Assets}))
+				r := gin.New()
+				s := http.FileServer(http.FS(FSPrefixer("public", Assets)))
+				r.NoRoute(func(context *gin.Context) {
+					s.ServeHTTP(context.Writer, context.Request)
+				})
 
 				r.GET("/files.json", func(c *gin.Context) {
 					files := make([]File, 0)
@@ -198,4 +202,26 @@ func main() {
 				os.Exit(1)
 			},
 		})
+}
+
+type FuncFS func(name string) (fs.File, error)
+
+func (f FuncFS) Open(name string) (fs.File, error) {
+	return f(name)
+}
+
+func FSPrefixer(prefix string, f fs.FS) fs.FS {
+	return FuncFS(func(name string) (fs.File, error) {
+		if name == "." {
+			name = ""
+		}
+
+		if name == "" {
+			name = prefix
+		} else {
+			name = prefix + "/" + name
+		}
+
+		return f.Open(name)
+	})
 }
